@@ -1,0 +1,15 @@
+function countRowsIncludingMerged(rangeInput) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var range = sheet.getRange(rangeInput);
+  var mergedRanges = range.getMergedRanges();
+  var rowCount = range.getNumRows();
+  
+  // Adjust for merged cells
+  mergedRanges.forEach(function(mergedRange) {
+    var mergedHeight = mergedRange.getHeight();
+    // Subtract the additional rows that the merge covers
+    rowCount -= (mergedHeight - 1);
+  });
+  
+  return rowCount;
+}
