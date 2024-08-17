@@ -1,0 +1,29 @@
+function countColoredTextCells(rangeInput) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var range = sheet.getRange(rangeInput);
+  var mergedRanges = range.getMergedRanges();
+  var cellCount = 0;
+  
+  // Function to check if the font color is not black and the cell is not empty
+  function isColoredText(cell) {
+    var fontColor = cell.getFontColor();
+    var value = cell.getValue();
+    
+    // Exclude black text and empty cells
+    return fontColor !== '#000000' && fontColor !== 'black' && value !== '';
+  }
+
+  // Loop through each cell in the range
+  for (var i = 1; i <= range.getNumRows(); i++) {
+    for (var j = 1; j <= range.getNumColumns(); j++) {
+      var cell = range.getCell(i, j);
+      
+      // Count the cell if it has colored text and is not part of a merged range (except the primary merged cell)
+      if (isColoredText(cell) && (!cell.isPartOfMerge() || cell.getMergedRanges()[0].getA1Notation() === cell.getA1Notation())) {
+        cellCount++;
+      }
+    }
+  }
+  
+  return cellCount;
+}
