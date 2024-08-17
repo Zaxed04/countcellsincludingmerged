@@ -1,0 +1,31 @@
+function countColoredTextAndHyperlinks(rangeInput) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var range = sheet.getRange(rangeInput);
+  var data = range.getRichTextValues();
+  var cellCount = 0;
+
+  // Function to check if the font color is not black and the cell is not empty
+  function isColoredText(cell) {
+    var fontColor = cell.getFontColor();
+    var value = cell.getValue();
+    
+    // Exclude black text and empty cells
+    return fontColor !== '#000000' && fontColor !== 'black' && value !== '';
+  }
+
+  // Loop through each cell in the range
+  for (var i = 1; i <= range.getNumRows(); i++) {
+    for (var j = 1; j <= range.getNumColumns(); j++) {
+      var cell = range.getCell(i, j);
+      var richText = data[i-1][j-1];
+      
+      // Check if the cell has colored text or a hyperlink
+      if ((isColoredText(cell) && (!cell.isPartOfMerge() || cell.getMergedRanges()[0].getA1Notation() === cell.getA1Notation())) ||
+          richText.getLinkUrl() !== null) {
+        cellCount++;
+      }
+    }
+  }
+
+  return cellCount;
+}
